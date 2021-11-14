@@ -1,2 +1,9 @@
-# pdi-labs-monitoria
-Laboratórios da disciplina Introdução ao Processamento de Imagens Digitais e Visão Computacional (UFCG)
+# Introdução ao Processamento de Imagens Digitais e Visão Computacional
+*** 
+
+***
+Esse laboratório possui a finalidade de explorar a construção manual de arquiteturas de Redes Neurais Convolucionais e a sua análise em problemas de classificação. Problemas de classificação são uma aplicação bastante comum de algoritmos de aprendizagem de máquina, onde Redes Neurais tendem a se destacar sobretudo quando são utilizados dados não estruturados. Nesse tipo de problema, os exemplos são divididos em classes e cada classe é associada a um número inteiro. Nesse contexto, a  função do classificador é associar cada exemplo de entrada à sua respectiva classe. Algumas tarefas de classificação são a identificação da presença de pessoas em uma imagem, a presença de anomalias em exames médicos ou ainda a identificação de componentes com defeito na linha de produção. Nessa tarefa, espera-se a concepção de um modelo de Aprendizagem de Máquina capaz de classificar uma dada imagem quanto à presença de cães ou gatos. Para isso, será utilizado o banco de dados Cats and Dogs Breeds Classification Oxford Dataset, que contém mais de 7 mil imagens de cães e gatos de raças diversas. Nesse banco de dados, as imagens de gatos têm seu nome iniciado com letra maiúscula (i.e. Abyssinian_34.jpg) e as imagens de cães têm o nome iniciado com letra minúscula (i.e. beagle_1.jpg). O banco de dados pode ser acessado a partir da plataforma Kaggle a partir do link acima.
+
+### Laboratório 8
+*** 
+Esse laboratório possui a finalidade de explorar o uso de técnicas de transferência de aprendizagem e ajuste fino em Redes Neurais Convolucionais canônicas. Técnicas de transferência de aprendizagem são utilizadas para reaproveitar pesos de redes previamente treinadas, com o objetivo de garantir uma inicialização interessante dos pesos para treinar redes novas. Além disso,  o ajuste fino permite utilizar a transferência de aprendizagem em uma rede mais robusta que a previamente utilizada, garantindo bons desempenhos no treinamento de modelos. 

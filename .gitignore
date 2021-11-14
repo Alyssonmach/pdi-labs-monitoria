@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+laboratorio06/images
+laboratorio06/images.zip
