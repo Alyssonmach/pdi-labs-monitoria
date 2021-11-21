@@ -283,10 +283,11 @@ class organize_csv(extract_jupyter):
         try:
             dataframe = pd.DataFrame(data)
             dataframe.to_excel(name, index = False)
-            print('Laboratório gerado com sucesso!')
-        except:
-            print('Erro ao gerar o dataframe.')
-
+            print('Tabela gerada com sucesso.')
+        except Exception as e:
+            print(e)
+            print('Um erro ocorreu. Lamentamos o ocorrido.')
+            
 def main():
     '''main function of the project'''
 
