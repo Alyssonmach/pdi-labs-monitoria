@@ -4,14 +4,22 @@ from tkinter import filedialog
 import tkinter as tk
 import pandas as pd
 import numpy as np
-import statistics
-import re
-import os
+import statistics, re, os
 
 # global variables with search keywords
 QUESTION_GRADES_REFERENCE = 'valor da questão'
 QUESTION_WEIGHTS_REFERENCE = 'taxa de acerto'
 NAME_REFERENCE = 'aluno'
+
+QUESTION_GRADES = list({'lab2': [1.5, 1.0, 1.5, 1.0, 1.0, 2.0, 2.0], 
+                        'lab3-pt1': [1.5, 2.0, 2.0, 2.0, 2.5],
+                        'lab3-pt2': [2.0, 2.0, 2.0, 2.0, 2.0], 
+                        'lab4': [1.0, 1.0, 1.0, 1.5, 1.0, 1.0, 1.5, 1.0, 1.0],
+                        'lab5-pt1': [2.5, 2.5, 2.0, 1.0, 1.0, 1.0], 
+                        'lab5-pt2': [2.0, 1.0, 1.0, 2.0, 2.0, 2.0],
+                        'lab6': [2.0, 1.0, 2.0, 2.0, 2.0, 1.0], 
+                        'lab7-pt1': [2.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0],
+                        'lab7-pt2': [2.0, 2.0, 4.0, 2.0]}.values())
 
 class extract_jupyter():
     '''extracting values from jupyter files'''
@@ -70,7 +78,7 @@ class extract_jupyter():
             sub_string (str) --> keyword for search
         
         Returns:
-            index_list (list) --> llist with the initial indexes of the keywords found in the file
+            index_list (list) --> list with the initial indexes of the keywords found in the file
         '''
 
         return [sub_init.start() for sub_init in re.finditer(sub_string, string)]
@@ -128,9 +136,11 @@ class extract_jupyter():
             name = name_string.split(':')[1].split('"')[0]
             if name[0].isspace(): name = name[1:]
             if name == '': name = 'Desconhecido'
+
             return name.title()
         except:
             name = 'Desconhecido'
+
             return name
 
     def adjust_weight(self, weight_string, str_confirmation, weights = True): 
@@ -165,7 +175,7 @@ class extract_jupyter():
 
         return weight 
 
-    def extract_information(self, path_file):
+    def extract_information(self, path_file, lab_number):
         '''
         extract student information from a jupyter file
 
@@ -188,7 +198,19 @@ class extract_jupyter():
         partial_adjust_weights = partial(self.adjust_weight, str_confirmation = 'taxa de acerto:')
         partial_adjust_grades = partial(self.adjust_weight, str_confirmation = 'valor da questão:', weights = False)
         
-        return path_file.split('/')[-1], self.adjust_names(name[0]), list(map(partial_adjust_grades, grades)), list(map(partial_adjust_weights, weights)) 
+        archive, name = path_file.split('/')[-1], self.adjust_names(name[0])
+        original_grades, find_grades = QUESTION_GRADES[lab_number - 1], list(map(partial_adjust_grades, grades))
+        weights = list(map(partial_adjust_weights, weights)) 
+        
+        if original_grades != find_grades:
+            print('"{}" apresentou divergência com os pesos das notas;'.format(name))
+            print('--')
+            print('Pesos originais do laboratório: {}'.format(original_grades))
+            print('Pesos alterados:                {}'.format(find_grades))
+            print('--\nOs pesos originais foram configurados como padrão')
+            os.system('pause'), os.system('cls')
+
+        return archive, name, original_grades, weights
 
 class organize_csv(extract_jupyter):
     '''organizes the information extracted from jupyter into an excel table'''
@@ -270,7 +292,6 @@ class organize_csv(extract_jupyter):
                 data['Nome'].append(self.names[index])
                 data['Nota'].append(np.sum(np.array(weights) * np.array(grades)))
 
-
                 for item in range(0, len(grades)):
                     data['Taxa ' + str(item + 1)].append(weights[item]) 
                     data['Valor ' + str(item + 1)].append(grades[item])
@@ -298,7 +319,35 @@ def main():
     print('2. Verifique se o nome do aluno, o valor e a taxa das questões estão preenchidos.')
     print('3. Verifique se os valores das questões estão consistentes na tabela de Excel gerada.')
     print('4. As taxas de acertos são notas que variam de 0 a 1.')
+    print('5. Selecione o número do laboratório a ser corrigido. A escolha incorreta pode gerar falhas no programa ou erros lógicos.')
     os.system('pause'), os.system('cls')
+
+    while True:
+        print('=== Gerador de Notas - Introdução ao Processamento de Imagens Digitais ===')
+        print('\n[1]. Laboratório 2: Processamento Digital de Imagens;')
+        print('[2]. Laboratório 3.1: Processamento Digital de Imagens;')
+        print('[3]. Laboratório 3.2: Domínio da Frequência e Filtragem;')
+        print('[4]. Laboratório 4: Morfologia Matemática;')
+        print('[5]. Laboratório 5.1: Segmentação em Imagens;')
+        print('[6]. Laboratório 5.2: Segmentação em Imagens;')
+        print('[7]. Laboratório 6: Redes Neurais Artificiais;')
+        print('[8]. Laboratório 7.1: Classificação de Dígitos com Redes Neurais Artificiais;')
+        print('[9]. Laboratório 7.2: Classificação de Dígitos com Redes Neurais Artificiais;')
+        print('--')
+
+        try:
+            lab_number = int(input('Digite o número de sua escolha: '))
+            if lab_number >= 1 and lab_number <= 9:
+                os.system('cls')
+                break
+            else:
+                os.system('cls')
+                print('Escolha inválida, por favor tente novamente.')
+                os.system('pause'), os.system('cls')
+        except:
+            os.system('cls')
+            print('Escolha inválida, por favor tente novamente.')
+            os.system('pause'), os.system('cls') 
 
     print('Selecione o diretório com os laboratórios...')
     path_dir = fun_utils.ask_for_directory()
@@ -306,7 +355,8 @@ def main():
 
     try:
         files = fun_utils.get_files_in_dir(path_dir = path_dir, extension = '.ipynb', excesion = 'checkpoints')
-        results = map(fun_utils.extract_information, files)
+        partial_extract_information = partial(fun_utils.extract_information, lab_number = lab_number)
+        results = map(partial_extract_information, files)
         csv_utils.set_values(list(results))
     except:
         print('Não foi possível localizar o diretório.')
