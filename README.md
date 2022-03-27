@@ -27,3 +27,5 @@ A estrutura e o formato dos laboratórios foram formatados para garantir facilid
 * Laboratório 6 - Redes Neurais Convolucionais;
 * Laboratório 7.1 - Redes Neurais Convolucionais;
 * Laboratório 7.2 - Redes Neurais Convolucionais;
+* Laboratório 8.1 - Transferência de Aprendizado;
+* Laboratório 8.2 - Ajuste Fino;
